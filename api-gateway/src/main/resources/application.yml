@@ -1,0 +1,124 @@
+server:
+  port: 8084
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: TRACE
+    reactor.netty: TRACE
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENTID}
+            client-secret: ${GOOGLE_CLIENTSECRET}
+            scope: openid, profile, email
+      resourceserver:
+        jwt:
+          issuer-uri: https://accounts.google.com
+          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+  cloud:
+    gateway:
+      routes:
+        - id: match-service-all
+          uri: http://${MATCH_SERVICE_BASEURL:localhost:8080}
+          predicates:
+            - Path=/matches
+            - Method=GET
+          filters:
+            - SetPath=/api/match/all
+        - id: match-service-post
+          uri: http://${MATCH_SERVICE_BASEURL:localhost:8080}
+          predicates:
+            - Path=/matches
+            - Method=POST
+          filters:
+            - SetPath=/api/match
+        - id: match-service-delete
+          uri: http://${MATCH_SERVICE_BASEURL:localhost:8080}
+          predicates:
+            - Path=/matches/{id}
+            - Method=DELETE
+          filters:
+            - SetPath=/api/match/{matchId}
+        - id: player-service-post
+          uri: http://${PLAYER_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/players
+            - Method=POST
+          filters:
+            - SetPath=/api/player
+        - id: player-service-all
+          uri: http://${PLAYER_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/players
+            - Method=GET
+          filters:
+            - SetPath=/api/player/all
+        - id: player-service-players
+          uri: http://${PLAYER_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/players
+            - Method=GET
+          filters:
+            - SetPath=/api/player
+        - id: player-service-player
+          uri: http://${PLAYER_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/players
+            - Method=GET
+          filters:
+            - SetPath=/api/player/
+        - id: player-service-delete
+          uri: http://${PLAYER_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/players/{id}
+            - Method=DELETE
+          filters:
+            - SetPath=/api/player/{playerId}
+        - id: club-service-post
+          uri: http://${CLUB_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/clubs
+            - Method=POST
+          filters:
+            - SetPath=/api/club
+        - id: club-service-all
+          uri: http://${CLUB_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/clubs
+            - Method=GET
+          filters:
+            - SetPath=/api/club/all
+        - id: club-service-search-club
+          uri: http://${CLUB_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/clubs
+            - Method=GET
+          filters:
+            - SetPath=/api/club
+        - id: club-service-put
+          uri: http://${CLUB_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/clubs
+            - Method=PUT
+          filters:
+            - SetPath=/api/club/{id}
+        - id: transfer-service-post
+          uri: http://${TRANSFER_SERVICE_BASEURL:localhost:8083}
+          predicates:
+            - Path=/transfers
+            - Method=POST
+          filters:
+            - SetPath=/api/transfer
+        - id: transfer-service-get
+          uri: http://${TRANSFER_SERVICE_BASEURL:localhost:8083}
+          predicates:
+            - Path=/transfers
+            - Method=GET
+          filters:
+            - SetPath=/api/transfer
