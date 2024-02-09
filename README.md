@@ -1,4 +1,4 @@
-# Enterprise Development Project - group 10
+# Enterprise Development Project
 
 ## Subject: Voetbal
 
